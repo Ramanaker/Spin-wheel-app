@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spin Wheel App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: lightgreen;
+      margin: 0;
+    }
+    #wheel-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+    }
+    #wheel {
+      width: 100%;
+      height: 100%;
+      border: 5px solid #333;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: conic-gradient(#ffcc00 0 50%, #33cc33 50% 100%);
+      font-size: 1.5em;
+      text-align: center;
+      transition: transform 2s ease-out;
+      position: relative;
+    }
+    #wheel::before {
+      content: 'Double Amount';
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: bold;
+      color: #000;
+    }
+    #wheel::after {
+      content: 'Half Amount';
+      position: absolute;
+      bottom: 20%;
+      left: 50%;
+      transform: translate(-50%, 50%);
+      font-weight: bold;
+      color: #000;
+    }
+    #pointer {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 20px solid #ff0000;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 1.5em;
+      font-weight: regular;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      cursor: pointer;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Spin Wheel For Rupees ₹10</h1>
+  <div id="wheel-container">
+    <div id="pointer"></div>
+    <div id="wheel"></div>
+  </div>
+  <div id="result">Result: </div>
+  <button onclick="spinWheel()">Spin</button>
+
+  <script>
+    let spinCount = 0;
+    let outcomes = [];
+    const initialAmount = 10;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function generateOutcomes() {
+      outcomes = ["Double Amount", "Half Amount", "Half Amount", "Half Amount"];
+      shuffle(outcomes);
+    }
+
+    function spinWheel() {
+      if (spinCount % 4 === 0) {
+        generateOutcomes();
+      }
+
+      let result = outcomes[spinCount % 4];
+      let amount = initialAmount;
+
+      if (result === "Double Amount") {
+        amount *= 2;
+      } else if (result === "Half Amount") {
+        amount /= 2;
+      }
+
+      const wheel = document.getElementById('wheel');
+      const resultDisplay = document.getElementById('result');
+      
+      wheel.style.transform = `rotate(${spinCount * 360 + (result === "Double Amount" ? 180 : 0) + 3600}deg)`;
+      
+      setTimeout(() => {
+        resultDisplay.textContent = `Result: ${result} (₹${amount})`;
+      }, 2000);
+
+      spinCount++;
+    }
+  </script>
+</body>
+</html>
